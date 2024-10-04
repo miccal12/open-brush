@@ -51,7 +51,6 @@ struct ParticleVertexWithSpread_t {
   fixed4 color : COLOR;
   float4 texcoord : TEXCOORD0;  // xy: texcoord   z: rotation   w: birth time
   float3 origin : TEXCOORD1;    // pos: location of the knot (particle "sprays" from this)
-  uint id : SV_VertexID;
 
   UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -65,7 +64,6 @@ struct ParticleVertex_t {
   // TOOLKIT: float3 center : TEXCOORD1;
   fixed4 color : COLOR;
   float4 texcoord : TEXCOORD0;  // xy: texcoord   z: rotation   w: birth time
-  uint id : SV_VertexID;
 
   UNITY_VERTEX_INPUT_INSTANCE_ID
 };

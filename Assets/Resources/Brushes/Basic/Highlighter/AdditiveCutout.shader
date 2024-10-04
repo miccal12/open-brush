@@ -16,11 +16,6 @@ Shader "Brush/Special/AdditiveCutout" {
 Properties {
   _MainTex ("Texture", 2D) = "white" {}
   _Cutoff ("Alpha cutoff", Range(0,1)) = 0.5
-
-  _Opacity ("Opacity", Range(0, 1)) = 1
-  _Dissolve ("Dissolve", Range(0, 1)) = 1
-	_ClipStart("Clip Start", Float) = 0
-	_ClipEnd("Clip End", Float) = -1
 }
 
 Category {
@@ -49,7 +44,6 @@ Category {
         fixed4 color : COLOR;
         float3 normal : NORMAL;
         float2 texcoord : TEXCOORD0;
-        uint id : SV_VertexID;
 
         UNITY_VERTEX_INPUT_INSTANCE_ID
       };
@@ -58,17 +52,11 @@ Category {
         float4 pos : POSITION;
         fixed4 color : COLOR;
         float2 texcoord : TEXCOORD0;
-        uint id : TEXCOORD2;
 
         UNITY_VERTEX_OUTPUT_STEREO
       };
 
       float4 _MainTex_ST;
-
-      uniform float _ClipStart;
-      uniform float _ClipEnd;
-      uniform half _Dissolve;
-      uniform half _Opacity;
 
       v2f vert (appdata_t v)
       {
@@ -83,15 +71,11 @@ Category {
         o.pos = UnityObjectToClipPos(v.vertex);
         o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
         o.color = TbVertToNative(v.color);
-        o.id = v.id;
         return o;
       }
 
       fixed4 frag (v2f i) : COLOR
       {
-        if (_ClipEnd > 0 && !(i.id.x > _ClipStart && i.id.x < _ClipEnd)) discard;
-        if (_Dissolve < 1 && Dither8x8(i.pos.xy) >= _Dissolve) discard;
-
          half4 c = tex2D(_MainTex, i.texcoord );
 
         // Cutoff the alpha value based on the incoming vertex alpha
@@ -99,7 +83,6 @@ Category {
 
         float4 col = i.color * float4(c.rgb,1);
         FRAG_MOBILESELECT(col)
-        col.a *= _Opacity;
         return col;
       }
       ENDCG
