@@ -80,8 +80,6 @@ namespace TiltBrush
 
         override public void UpdateTool()
         {
-            UpdateTimeRecords();
-
             // Don't call base.UpdateTool() because we have a different 'stop eating input' check
             // for FreePaintTool.
             m_wandTriggerRatio = InputManager.Wand.GetTriggerRatio();
@@ -291,6 +289,7 @@ namespace TiltBrush
             float fPrevRatio = GetSize01();
             PointerManager.m_Instance.AdjustAllPointersBrushSize01(m_AdjustSizeScalar * fAdjustAmount);
             PointerManager.m_Instance.MarkAllBrushSizeUsed();
+            App.Switchboard.TriggerBrushSizeChanged();
             float fCurrentRatio = GetSize01();
 
             float fHalfInterval = m_HapticInterval * 0.5f;

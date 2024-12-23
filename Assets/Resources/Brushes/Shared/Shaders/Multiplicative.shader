@@ -56,6 +56,11 @@ Category {
 
       float4 _MainTex_ST;
 
+      uniform half _ClipStart;
+      uniform half _ClipEnd;
+      uniform half _Dissolve;
+      uniform half _Opacity;
+
       v2f vert (appdata_t v)
       {
         PrepForOds(v.vertex);
@@ -65,7 +70,7 @@ Category {
         UNITY_SETUP_INSTANCE_ID(v);
         UNITY_INITIALIZE_OUTPUT(v2f, o);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-        
+
         o.vertex = UnityObjectToClipPos(v.vertex);
         o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
                                 o.color = v.color;
@@ -74,6 +79,11 @@ Category {
 
       fixed4 frag (v2f i) : COLOR
       {
+        #ifdef SHADER_SCRIPTING_ON
+        if (_ClipEnd > 0 && !(i.id.x > _ClipStart && i.id.x < _ClipEnd)) discard;
+        if (_Dissolve < 1 && Dither8x8(i.pos.xy) >= _Dissolve) discard;
+        #endif
+
          half4 c = tex2D(_MainTex, i.texcoord );
          c = i.color * c;
                                 // TODO: investigate doing this in the blend mode
