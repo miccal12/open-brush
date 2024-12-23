@@ -325,7 +325,8 @@ namespace TiltBrush
                 StrokeExtension strokeExtensionMask = StrokeExtension.Flags | StrokeExtension.Seed;
                 if (stroke.m_BrushScale != 1) { strokeExtensionMask |= StrokeExtension.Scale; }
                 if (stroke.Group != SketchGroupTag.None) { strokeExtensionMask |= StrokeExtension.Group; }
-                strokeExtensionMask |= StrokeExtension.Layer;
+                strokeExtensionMask |= StrokeExtension.Track;
+                strokeExtensionMask |= StrokeExtension.Frame;
 
                 writer.UInt32((uint)strokeExtensionMask);
                 uint controlPointExtensionMask =
@@ -346,9 +347,13 @@ namespace TiltBrush
                 {
                     writer.Int32(stroke.m_Seed);
                 }
-                if ((uint)(strokeExtensionMask & StrokeExtension.Layer) != 0)
+                if ((uint)(strokeExtensionMask & StrokeExtension.Track) != 0)
                 {
-                    writer.UInt32(copy.layerIndex);
+                    writer.UInt32(copy.trackIndex);
+                }
+                if ((uint)(strokeExtensionMask & StrokeExtension.Frame) != 0)
+                {
+                    writer.UInt32(copy.frameIndex);
                 }
 
                 // Control points
@@ -692,6 +697,8 @@ namespace TiltBrush
                 }
 
                 // Process stroke extension fields...
+                UInt32 trackIndex = 0;
+                UInt32 frameIndex = 0;
                 for (var fields = strokeExtensionMask; fields != 0; fields &= (fields - 1))
                 {
                     uint bit = (fields & ~(fields - 1));
@@ -712,14 +719,19 @@ namespace TiltBrush
                                 stroke.Group = App.GroupManager.GetGroupFromId(groupId);
                                 break;
                             }
-                        case StrokeExtension.Layer:
-                            UInt32 layerIndex = reader.UInt32();
+                        case StrokeExtension.Track:
+                            trackIndex = reader.UInt32();
                             if (squashLayers)
                             {
-                                layerIndex = 0;
+                                trackIndex = 0;
                             }
-                            var canvas = App.Scene.GetOrCreateLayer((int)layerIndex);
-                            stroke.m_IntendedCanvas = canvas;
+                            break;
+                        case StrokeExtension.Frame:
+                            frameIndex = reader.UInt32();
+                            if (squashLayers)
+                            {
+                                frameIndex = 0;
+                            }
                             break;
                         case StrokeExtension.Seed:
                             stroke.m_Seed = reader.Int32();
@@ -740,6 +752,8 @@ namespace TiltBrush
                             }
                     }
                 }
+                var canvas = App.Scene.GetOrCreateLayer((int)trackIndex, (int)frameIndex);
+                stroke.m_IntendedCanvas = canvas;
 
                 // Process control points...
                 int nControlPoints = reader.Int32();
