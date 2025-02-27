@@ -70,6 +70,20 @@
   },
   "scopedRegistries": [
     {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.atteneder",
+        "com.ixxy.polyhydra.core",
+        "com.nition.unity-octree",
+        "org.nuget.google",
+        "org.nuget.sharpziplib",
+        "org.nuget.system",
+        "com.openupm",
+        "com.syomus.proceduraltoolkit"
+      ]
+    },
+    {
       "name": "Vive",
       "url": "https://npm-registry.vive.com",
       "scopes": [
@@ -77,30 +91,10 @@
       ]
     },
     {
-      "name": "Unity NuGet",
-      "url": "https://unitynuget-registry.azurewebsites.net",
-      "scopes": [
-        "org.nuget.google",
-        "org.nuget.sharpziplib",
-        "org.nuget.system"
-      ]
-    },
-    {
       "name": "Meta XR",
       "url": "https://npm.developer.oculus.com",
       "scopes": [
         "com.meta.xr.sdk"
-      ]
-    },
-    {
-      "name": "OpenUPM",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.atteneder",
-        "com.ixxy.polyhydra.core",
-        "com.nition.unity-octree",
-        "com.openupm",
-        "com.syomus.proceduraltoolkit"
       ]
     }
   ]
