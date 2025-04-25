@@ -29,7 +29,7 @@
 /*.userprefs
 .vsconfig
 .vs
-.vscode/
+#.vscode/
 
 # Generated files in TiltBrushCpp project
 /Support/TiltBrushCpp/x64
